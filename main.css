@@ -1,0 +1,13 @@
+body {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+	flex-wrap: nowrap;
+}
+
+.game {
+	width: 900px;
+	height: 600px;
+	border: 1px solid #ebebeb;
+}

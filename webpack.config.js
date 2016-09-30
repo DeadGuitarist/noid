@@ -13,14 +13,14 @@ module.exports = {
 		filename: "[name].js"
 	},
 	watch: true,
-	devtool: 'cheap-module-source-map',
+	devtool: 'cheap-source-map',
 	progress: true,
 	colors: true,
 	module: {
 		loaders: [
 			{
-				test: /\.css$/,
-				loader: "style!css"
+				test: /\.scss$/,
+				loader: "style!css!sass"
 			},
 			{
 				test: /\.js$/,
@@ -38,7 +38,7 @@ module.exports = {
 			name: 'common',
 			filename: "common.js"
 		}),
-		// new CleanWebpackPlugin(['build']),
+		new CleanWebpackPlugin(['build']),
 	],
 	devServer: {
 		contentBase: "./build",

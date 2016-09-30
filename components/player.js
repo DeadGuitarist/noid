@@ -7,31 +7,42 @@ export class Player {
 		this.container.className = 'player'
 
 		this.move$ = Observable.fromEvent(document, 'mousemove')
-			.startWith({screenX: 0})
 			.pairwise()
 			.map(pair => pair[1].screenX - pair[0].screenX)
-			.filter(dX => {
-				let newX = this.container.offsetLeft + dX
-				return newX > 0 && newX < 800
-			})
 
 		this.subs = []
 	}
 
-	static init(game) {
-		let player = new Player()
-		game.appendChild(player.container)
-		return player
+
+	/**
+	 *
+	 */
+	runSubscriptions() {
+		this.subs.push(
+			this.move$.subscribe(
+				(dX) => {
+					this._move(dX)
+				},
+				console.log)
+		)
 	}
 
-	runSubscriptions() {
-		this.subs.push(this.move$.subscribe(
-			(dX) => {
-				// console.log(dX)
-				this.container.style.left = this.container.offsetLeft + dX + 'px'
-			}
-		))
+	/**
+	 *
+	 * @param dX
+	 * @returns {*}
+	 * @private
+	 */
+	_move(dX) {
+		if (this.container.offsetLeft + dX <= 0)
+			return this.container.style.left = '0px'
+
+		if (this.container.offsetLeft + dX >= 800)
+			return this.container.style.left = '800px'
+
+		this.container.style.left = this.container.offsetLeft + dX + 'px'
 	}
+
 
 	unsubscribe() {
 		this.subs.forEach(sub => sub.dispose())

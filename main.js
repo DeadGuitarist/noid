@@ -1,17 +1,19 @@
-import "./main.css"
+import "./main.scss"
 import {Observable} from "rx"
-import {Player} from "./components/player";
+import {Game} from "./components/game";
+
 
 main()
 
 function main() {
-	const game = initGame()
-	Observable.fromEvent(game.field, 'click')
+	const game = new Game()
+	game.appendTo(document.body)
+
+	Observable.fromEvent(game.container, 'click')
 		.take(1)
 		.subscribe(
 			(e) => {
-				console.log(e)
-				game.engine = startGame(game)
+				game.start()
 			},
 			(err) => {
 				console.log(err)
@@ -19,47 +21,8 @@ function main() {
 			() => {
 				console.log('done')
 				setTimeout(() => {
-					stopGame(game)
+					game.stop()
 				}, 5000)
 			}
 		)
-
-
-}
-
-
-function initGame() {
-	let field = document.createElement('main'),
-		result = {}
-	field.className = 'field'
-	document.body.appendChild(field)
-
-	result.player = Player.init(field)
-	result.field = field
-	// result.ball = Ball.init(game)
-
-	return result
-}
-
-function startGame(game) {
-	document.body.style.cursor = 'none'
-
-	game.player.runSubscriptions()
-	// game.ball.runSubscriptions()
-	// game.enemies.forEach(enemy => enemy.runSubscriptions())
-
-	// return setInterval(() => {
-	//
-	// }, 4)
-}
-
-function stopGame(game) {
-	document.body.style.cursor = 'auto'
-	clearInterval(game.engine)
-
-	game.player.unsubscribe()
-
-	//
-
-
 }

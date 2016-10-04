@@ -20,6 +20,10 @@ export class Ball {
 		this.subs = []
 	}
 
+
+	/**
+	 *
+	 */
 	runSubscriptions() {
 		this.subs.push(
 			Engine().subscribe(() => this._move()),
@@ -30,22 +34,34 @@ export class Ball {
 		)
 	}
 
-	_changeDirection(x, y) {
-		this.mV.x *= x
-		this.mV.y *= y
+
+	/**
+	 *
+	 */
+	unsubscribe() {
+		this.subs.forEach(sub => sub.dispose())
 	}
 
+
+	/**
+	 *
+	 * @private
+	 */
 	_playerCollision() {
 		if (
 			(this.container.offsetTop >= GameInstance.player.container.offsetTop - this.container.clientHeight) &&
-			(this.container.offsetLeft >= GameInstance.player.container.offsetLeft) &&
-			(this.container.offsetLeft + this.container.clientWidth <= GameInstance.player.container.offsetLeft + GameInstance.player.container.clientWidth )
+			(this.container.offsetLeft + this.container.clientWidth >= GameInstance.player.container.offsetLeft) &&
+			(this.container.offsetLeft <= GameInstance.player.container.offsetLeft + GameInstance.player.container.clientWidth )
 		) {
 			this._changeDirection(1, -1)
 		}
 	}
 
 
+	/**
+	 *
+	 * @private
+	 */
 	_wallCollision() {
 		if (
 			(this.container.offsetTop <= 0 && this.container.offsetLeft <= 0) ||
@@ -77,16 +93,23 @@ export class Ball {
 		return false
 	}
 
-	enemyCollision() {
-		//todo Проверяем на столкновение с врагом или стеной после чего возвращаем инстанс того с кем столкнулись
-		return null
+
+	/**
+	 *
+	 * @param x
+	 * @param y
+	 * @private
+	 */
+	_changeDirection(x, y) {
+		this.mV.x *= x
+		this.mV.y *= y
 	}
 
-	unsubscribe() {
-		this.subs.forEach(sub => sub.dispose())
-	}
 
-
+	/**
+	 *
+	 * @private
+	 */
 	_move() {
 		this.container.style.bottom = parseFloat(this.container.style.bottom) + (this.mV.y * this.speed) + 'px'
 		this.container.style.left = parseFloat(this.container.style.left) + (this.mV.x * this.speed) + 'px'

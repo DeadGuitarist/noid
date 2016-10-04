@@ -6,30 +6,26 @@ export class Ball {
 	constructor() {
 		this.container = document.createElement('div')
 		this.container.className = 'ball'
+		this.container.style.bottom = '26px'
+		this.container.style.left = '438px'
 
-		this.speed = 1.3
+		this.speed = 1
 		this.mV = {
 			x: 0.5,
-			y: 0.5
+			y: 0.87
 		}
 
 		this._lastCollision = null
 
 		this.subs = []
-
-		console.log(this)
-
 	}
 
 	runSubscriptions() {
 		this.subs.push(
 			Engine().subscribe(() => this._move()),
-			// Engine()
-			// 	.filter(() => {
-			// 		// не сразу же проверять на столкновение с врагом
-			// 		return this.container.offsetTop < 300 && this.collision() instanceof Enemy
-			// 	})
-			// 	.subscribe(),
+			Engine()
+				.filter(() => this.container.offsetTop > 500)
+				.subscribe(() => this._playerCollision()),
 			Engine().subscribe(() => this._wallCollision())
 		)
 	}
@@ -39,10 +35,18 @@ export class Ball {
 		this.mV.y *= y
 	}
 
+	_playerCollision() {
+		if (
+			(this.container.offsetTop >= GameInstance.player.container.offsetTop - this.container.clientHeight) &&
+			(this.container.offsetLeft >= GameInstance.player.container.offsetLeft) &&
+			(this.container.offsetLeft + this.container.clientWidth <= GameInstance.player.container.offsetLeft + GameInstance.player.container.clientWidth )
+		) {
+			this._changeDirection(1, -1)
+		}
+	}
+
 
 	_wallCollision() {
-		console.log(this.container.offsetTop, this.container.offsetLeft)
-
 		if (
 			(this.container.offsetTop <= 0 && this.container.offsetLeft <= 0) ||
 			(this.container.offsetTop <= 0 && this.container.offsetLeft >= GameInstance.width - this.container.clientWidth)
@@ -84,8 +88,8 @@ export class Ball {
 
 
 	_move() {
-		this.container.style.bottom = (parseFloat(this.container.style.bottom) || 26) + (this.mV.y * this.speed) + 'px'
-		this.container.style.left = (parseFloat(this.container.style.left) || 438) + (this.mV.x * this.speed) + 'px'
+		this.container.style.bottom = parseFloat(this.container.style.bottom) + (this.mV.y * this.speed) + 'px'
+		this.container.style.left = parseFloat(this.container.style.left) + (this.mV.x * this.speed) + 'px'
 	}
 
 }

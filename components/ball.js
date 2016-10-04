@@ -30,7 +30,8 @@ export class Ball {
 			Engine()
 				.filter(() => this.container.offsetTop > 500)
 				.subscribe(() => this._playerCollision()),
-			Engine().subscribe(() => this._wallCollision())
+
+			...this._wallCollision()
 		)
 	}
 
@@ -60,37 +61,35 @@ export class Ball {
 
 	/**
 	 *
+	 * @returns {*[]}
 	 * @private
 	 */
 	_wallCollision() {
-		if (
-			(this.container.offsetTop <= 0 && this.container.offsetLeft <= 0) ||
-			(this.container.offsetTop <= 0 && this.container.offsetLeft >= GameInstance.width - this.container.clientWidth)
-		) {
-			this._changeDirection(-1, -1)
-			return
-		}
+		return [
 
+			Engine()
+				.filter(() =>
+					(this.container.offsetTop <= 0 && this.container.offsetLeft <= 0) ||
+					(this.container.offsetTop <= 0 && this.container.offsetLeft >= GameInstance.width - this.container.clientWidth)
+				)
+				.subscribe(() => this._changeDirection(-1, -1)),
 
-		if (this.container.offsetTop >= GameInstance.height - this.container.clientHeight) {
-			GameInstance.player.die()
-			GameInstance.resetGame()
-			return
-		}
+			Engine()
+				.filter(() => this.container.offsetTop >= GameInstance.height - this.container.clientHeight)
+				.subscribe(() => {
+					GameInstance.player.die()
+					GameInstance.resetGame()
+				}),
 
+			Engine()
+				.filter(() => this.container.offsetTop <= 0)
+				.subscribe(() => this._changeDirection(1, -1)),
 
+			Engine()
+				.filter(() => this.container.offsetLeft <= 0 || this.container.offsetLeft >= GameInstance.width - this.container.clientWidth)
+				.subscribe(() => this._changeDirection(-1, 1))
 
-		if (this.container.offsetTop <= 0) {
-			this._changeDirection(1, -1)
-			return
-		}
-
-		if (this.container.offsetLeft <= 0 || this.container.offsetLeft >= GameInstance.width - this.container.clientWidth) {
-			this._changeDirection(-1, 1)
-			return
-		}
-
-		return false
+		]
 	}
 
 

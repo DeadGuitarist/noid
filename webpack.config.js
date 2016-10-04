@@ -13,7 +13,7 @@ module.exports = {
 		filename: "[name].js"
 	},
 	watch: true,
-	devtool: 'cheap-source-map',
+	devtool: 'source-map',
 	progress: true,
 	colors: true,
 	module: {

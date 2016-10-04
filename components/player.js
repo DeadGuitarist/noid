@@ -1,16 +1,29 @@
 import {Observable} from "rx";
+import {GameInstance} from './game'
 
 export class Player {
 
 	constructor() {
+		this.lives = 3
+
 		this.container = document.createElement('div')
 		this.container.className = 'player'
+		this.container.innerText = this.lives
 
 		this.move$ = Observable.fromEvent(document, 'mousemove')
 			.pairwise()
 			.map(pair => pair[1].screenX - pair[0].screenX)
 
 		this.subs = []
+	}
+
+
+	die() {
+		this.lives--
+
+		this.container.innerText = this.lives
+		this.container.style.bottom = '10px'
+		this.container.style.left = '400px'
 	}
 
 
